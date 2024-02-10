@@ -48,7 +48,7 @@ export default class AuthController {
       if (existUser)
         return res.json({
           status: 400,
-          message: "email is already registered",
+          message: "email is already exist",
         });
 
       delete details.confirmPassword;
