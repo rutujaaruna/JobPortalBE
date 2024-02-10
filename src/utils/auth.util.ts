@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { DecodedToken } from '../types/auth.type';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.model';
+import bcrypt from 'bcrypt';
 
 
 // Generate a JSON Web Token (JWT) with an optional expiration time
@@ -29,4 +30,10 @@ export const verifyJWT = (req: Request, res: Response, next:NextFunction) => {
   } catch (error) {
     next(error);
   }
+};
+
+// Compare a value with a previously hashed value
+export const compare = (value:string, compareValue:string) => {
+  const matchedValue = bcrypt.compare(value, compareValue);
+  return matchedValue;
 };

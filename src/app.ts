@@ -8,7 +8,7 @@ import router from './routers/index';
 import { Connection } from './data-source';
 
 const port: number = parseInt(process.env.PORT as string, 10) || 3000;
-const hostName: string = process.env.HOSTNAME || 'localhost';
+const hostName: string = process.env.HOSTNAME ?? 'localhost';
 
 dotenv.config();
 const app:express.Application = express();
@@ -24,6 +24,7 @@ Connection.initialize().then(() => {
 });
 
 app.use(morgan('dev'));
+app.use(express.json());
 app.use(express.static(path.join(process.cwd(), '/public')));
 app.use(express.urlencoded({ extended: true })); // URL parser
 app.use('/api', router);
