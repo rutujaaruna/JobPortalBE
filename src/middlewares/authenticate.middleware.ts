@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { DecodedToken } from '../src/types/auth.type';
+import { DecodedToken } from '../types/auth.type';
 import jwt from 'jsonwebtoken';
-
-
 
 // Verify a JWT from the request header and set email and token in the request query
 export const verifyJWT = (req: Request, res: Response, next:NextFunction) => {
