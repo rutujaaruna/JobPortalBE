@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import logger from "../logger";
 import AuthRepository from "../services/auth.service";
 import { compare, generateJWT, hash } from "../utils/auth.util";
-import { loginSchema } from "../utils/joi.util";
+import { loginSchema, registerSchema } from "../utils/joi.util";
 import { DeleteDateColumn } from "typeorm";
 
 export default class AuthController {
@@ -43,6 +43,7 @@ export default class AuthController {
 
   static register = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // const registerResult = await registerSchema.validateAsync(req.body);
       const details = req.body;
       const existUser = await AuthRepository.getUserByEmail(details.email);
       if (existUser)
