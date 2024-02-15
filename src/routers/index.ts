@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import authRoute from './auth.route';
+import jobRoute from './job.route';
 
 const router = Router();
 
@@ -12,6 +13,10 @@ const proRoute: IRoute[] = [
   {
     path: '/auth',
     route: authRoute,
+  },
+  {
+    path: '/jobs',
+    route: jobRoute,
   },
 ];
 

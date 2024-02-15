@@ -58,9 +58,6 @@ export class Job extends BaseEntity {
       jobsDescription: string | null;
 
     @Column({ type: 'varchar', length: 500, nullable: true, default: null })
-      filePath: string | null;
-
-    @Column({ type: 'varchar', length: 500, nullable: true, default: null })
       role: string | null;
 
     @Column({ type: 'varchar', length: 500, nullable: true, default: null })
@@ -81,11 +78,11 @@ export class Job extends BaseEntity {
 
     @Column({
       type: 'enum',
-      enum: ['job', 'internship'],
+      enum: ['Job', 'Internship'],
       nullable: false,
       default: null,
     })
-      jobType: 'job' | 'internship' | null;
+      jobType: 'Job' | 'Internship' | null;
 
     @OneToMany(() => JobApplicant, (jobApplicant) => jobApplicant.job)
       jobApplicant: JobApplicant[];
