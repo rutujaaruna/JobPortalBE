@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Job } from "./jobs.models";
+import { WorkingDetails } from "./workExpereience.model";
 
 enum Gender {
   Male = "male",
@@ -56,4 +57,7 @@ export class User {
 
   @UpdateDateColumn({ type: "timestamp", nullable: true })
   updated_at: Date;
+
+  @OneToMany(() => WorkingDetails, (workingDetails) => workingDetails.user)
+  workingDetails: WorkingDetails;
 }
