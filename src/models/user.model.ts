@@ -59,5 +59,5 @@ export class User {
   updated_at: Date;
 
   @OneToMany(() => WorkingDetails, (workingDetails) => workingDetails.user)
-  workingDetails: WorkingDetails;
+  workingDetails: WorkingDetails[];
 }
