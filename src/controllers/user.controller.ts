@@ -10,8 +10,6 @@ export default class UserController {
       console.log('userI', userId);
       const profileData = await UserRepository.getProfileData(userId as number);
       console.log('profileData', profileData);
-
-      const profileData = await userRepository.getProfileData(userId as number);
       return res.json({
         data: profileData,
         status: 200,
