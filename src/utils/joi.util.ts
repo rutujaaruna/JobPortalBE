@@ -86,3 +86,95 @@ export const postJobSchema = Joi.object({
     'any.required': 'Employment Type is required',
   })
 });
+
+
+export const userBasicSchema = Joi.object({
+  firstName: Joi.string().required().messages({
+    'any.required': 'First Name is required',
+  }),
+  lastName: Joi.string().required().messages({
+    'any.required': 'last Name is required',
+  }),
+  email: Joi.string().required().email().messages({
+    'any.required': 'Email is required',
+    'string.email': 'Invalid Email',
+  }),
+  middleName: Joi.allow(null).required().messages({
+    'any.required': 'Middle name is required',
+  }),
+  dateOfBirth: Joi.date().messages({
+    'any.required': 'Date of Birth is required',
+  }),
+  gender: Joi.string().messages({
+    'any.required': 'Gender is required',
+  }),
+  profileVisit: Joi.boolean().messages({
+    'any.required': 'profileVisit is required',
+  }),
+});
+
+export const userPersonalSchema = Joi.object({
+  location: Joi.string().required().messages({
+    'any.required': 'location is required',
+  }),
+  address: Joi.string().messages({
+    'any.required': 'Address is required',
+  }),
+  mobileNo: Joi.number().messages({
+    'any.required': 'Mobile Number  is required',
+  }),
+  bloodGroup: Joi.string().required().messages({
+    'any.required': 'Blood Group is required',
+  }),
+  relationshipStatus: Joi.string().messages({
+    'any.required': 'relationShip Status is required',
+  }),
+  user: Joi.string().messages({
+    'any.required': 'user is required',
+  }),
+  nationality: Joi.string().messages({
+    'any.required': 'Nationality is required',
+  }),
+});
+
+export const userEduDetails = Joi.object({
+  programDegree: Joi.string().required().messages({
+    'any.required': 'program Degree is required',
+  }),
+  collegeName: Joi.string().messages({
+    'any.required': 'College Name is required',
+  }),
+  startDate: Joi.date().messages({
+    'any.required': 'Start date  is required',
+  }),
+  endDate: Joi.date().required().messages({
+    'any.required': 'End Date is required',
+  }),
+  location: Joi.string().messages({
+    'any.required': 'location  is required',
+  }),
+  user: Joi.string().messages({
+    'any.required': 'User Id is required',
+  }),
+});
+
+export const WorkExpDetails = Joi.object({
+  companyName: Joi.string().required().messages({
+    'any.required': 'companyName is required',
+  }),
+  designation: Joi.string().messages({
+    'any.required': 'designation is required',
+  }),
+  joiningDate: Joi.date().messages({
+    'any.required': 'joiningDate  is required',
+  }),
+  leavingDate: Joi.date().required().messages({
+    'any.required': 'leavingDate is required',
+  }),
+  location: Joi.string().messages({
+    'any.required': 'location Status is required',
+  }),
+  user: Joi.string().messages({
+    'any.required': 'User Id is required',
+  }),
+});

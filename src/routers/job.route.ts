@@ -12,4 +12,22 @@ const router = Router();
  */
 router.post('/postJob', verifyJWT, JobController.postJob);
 
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for getting job details alumni side.
+ * @method : GET
+ * @endpoint : /api/jobs/getJob
+ * @middleware : verifyJWT
+ */
+router.get('/getJob', verifyJWT, JobController.getJob);
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for getting user applied job details status.
+ * @method : GET
+ * @endpoint : /api/jobs/getUserAppliedJob
+ * @middleware : verifyJWT
+ */
+router.get('/getUserAppliedJob', verifyJWT, JobController.getUserAppliedJob);
+
 export default router;
