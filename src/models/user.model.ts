@@ -71,4 +71,5 @@ export class User {
 
   @OneToMany(() => EducationalDetails, (educationalDetails) => educationalDetails.user)
     educationalDetails: EducationalDetails;
+
 }
