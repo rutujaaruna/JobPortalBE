@@ -4,30 +4,30 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-} from "typeorm";
-import { User } from "./user.model";
+} from 'typeorm';
+import { User } from './user.model';
 
 @Entity()
 export class WorkingDetails {
   @PrimaryGeneratedColumn()
-  workId: number;
+    workId: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  companyName: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+    companyName: string;
 
-  @Column({ type: "tinyint", default: 0 })
-  isWorking: boolean;
+  @Column({ type: 'tinyint', default: 0 })
+    isWorking: boolean;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  designation: string;
-
-  @Column({ nullable: true })
-  joiningDate: Date;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+    designation: string;
 
   @Column({ nullable: true })
-  leavingDate: Date;
+    joiningDate: Date;
+
+  @Column({ nullable: true })
+    leavingDate: Date;
 
   @ManyToOne(() => User, (user) => user.id)
-  @JoinColumn({ name: "userId" })
-  user: User;
+  @JoinColumn({ name: 'userId' })
+    user: User;
 }

@@ -1,7 +1,7 @@
-import { Router } from "express";
-import authRoute from "./auth.route";
-import jobRoute from "./job.route";
-import userRoute from "./user.route";
+import { Router } from 'express';
+import authRoute from './auth.route';
+import jobRoute from './job.route';
+import userRoute from './user.route';
 
 const router = Router();
 
@@ -12,15 +12,15 @@ interface IRoute {
 
 const proRoute: IRoute[] = [
   {
-    path: "/auth",
+    path: '/auth',
     route: authRoute,
   },
   {
-    path: "/user",
+    path: '/user',
     route: userRoute,
   },
   {
-    path: "/jobs",
+    path: '/jobs',
     route: jobRoute,
   },
 ];
