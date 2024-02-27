@@ -46,11 +46,6 @@ export default class UserRepository {
     return userData;
   };
 
-  static getEduData = async(id : number) => {
-    const userData = await eduDetailsRepository.findOne({ where:{ user:{ id:id } } });
-    return userData;
-  };
-
   static saveEduDetails = async(data:UserDetails) => {
     const user = await eduDetailsRepository.save(data);
     return user;
@@ -59,11 +54,6 @@ export default class UserRepository {
   static updateEduDetails = async(data:UserDetails, userId:number, eduId:number) => {
     const user = await eduDetailsRepository.update({ user:{ id:userId }, eduId:eduId }, data);
     return user;
-  };
-
-  static getWorkExpData = async(id : number) => {
-    const userData = await workExpRepository.findOne({ where:{ user:{ id:id } } });
-    return userData;
   };
 
   static saveWorkExpDetails = async(data:UserDetails) => {

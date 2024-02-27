@@ -11,7 +11,7 @@ export class EducationalDetails {
       user: User;
 
     @Column({ type: 'varchar', nullable: true })
-      collageName: string;
+      collegeName: string;
 
     @Column({ type: 'varchar', nullable: true })
       programDegree: string;
@@ -26,8 +26,8 @@ export class EducationalDetails {
       location: string;
 
     @CreateDateColumn({ type: 'timestamp', nullable: true })
-    created_at: Date;
+      created_at: Date;
 
     @UpdateDateColumn({ type: 'timestamp', nullable: true })
-    updated_at: Date;
+      updated_at: Date;
 }

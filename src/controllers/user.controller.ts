@@ -59,14 +59,12 @@ export default class UserController {
       const userData = req.body; // Parse the JSON data from the request body.
       const userId = parseInt(req.query.userId as string, 10);
       userData.user = req.query.userId;
+      const eduId = parseInt(req.query?.eduId as string, 10);
 
       const result = await userEduDetails.validateAsync(userData);
 
-      const userExist = await UserRepository.getEduData(userId);
-
-      if (userExist && userData.eduId !== null) {
-        const eduID = userData.eduId;
-        await UserRepository.updateEduDetails(result, userId, eduID);
+      if (eduId) {
+        await UserRepository.updateEduDetails(result, userId, eduId);
       } else {
         await UserRepository.saveEduDetails(result);
       }
@@ -83,14 +81,14 @@ export default class UserController {
       const userData = req.body; // Parse the JSON data from the request body.
       const userId = parseInt(req.query.userId as string, 10);
       userData.user = req.query.userId;
+      const workId = parseInt(req.query?.workId as string, 10);
+      console.log('userData', userData);
+
 
       const result = await WorkExpDetails.validateAsync(userData);
 
-      const userExist = await UserRepository.getWorkExpData(userId);
-
-      if (userExist && userData.workId !== null) {
-        const eduID = userData.workId;
-        await UserRepository.updateWorkExpDetails(result, userId, eduID);
+      if (workId) {
+        await UserRepository.updateWorkExpDetails(result, userId, workId);
       } else {
         await UserRepository.saveWorkExpDetails(result);
       }
@@ -104,8 +102,6 @@ export default class UserController {
 
   static getProfileDetails = async(req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log('aaa');
-
       const userId = parseInt(req.query.userId as string, 10);
       const getUserData = await UserRepository.getProfileDetails(userId);
       console.log('getUserData', getUserData);

@@ -29,6 +29,9 @@ export class WorkingDetails {
   @Column({ nullable: true })
     leavingDate: Date;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+    location: string;
+
   @CreateDateColumn({ type: 'timestamp', nullable: true })
     created_at: Date;
 
