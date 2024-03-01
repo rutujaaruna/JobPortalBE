@@ -40,4 +40,33 @@ router.get('/getUserAppliedJob', verifyJWT, JobController.getUserAppliedJob);
  */
 router.get('/getAlumniAppliedJob', verifyJWT, JobController.getAlumniAppliedJobData);
 
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for getting user job details.
+ * @method : GET
+ * @endpoint : /api/jobs/getUserJob
+ * @middleware : verifyJWT
+ */
+router.get('/getUserJob', verifyJWT, JobController.getUserJob);
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for update Status Applied Job of Applicants.
+ * @method : POST
+ * @endpoint : /api/jobs/updateStatus
+ * @middleware : verifyJWT
+ */
+router.post('/updateStatus', verifyJWT, JobController.updateApplicationStatus);
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for getting applied job data.
+ * @method : GET
+ * @endpoint : /api/jobs/getAppliedJobData
+ * @middleware : verifyJWT
+ */
+router.get('/getAppliedJobData', verifyJWT, JobController.getAppliedJobData);
+
+
+
 export default router;

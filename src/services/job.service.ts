@@ -1,7 +1,7 @@
-import { Brackets } from 'typeorm';
+import { Brackets, DeepPartial } from 'typeorm';
 import { Connection } from '../data-source';
 import { Job } from '../models/jobs.models';
-import { JobApplicant } from '../models/jobApplicants.model';
+import { ApplicationStatus, JobApplicant } from '../models/jobApplicants.model';
 
 
 const jobRepository = Connection.getRepository(Job);
@@ -97,5 +97,79 @@ export default class JobRepository {
       .offset(offset)
       .getMany();
     return { JobApplicant, total };
+  };
+
+  // This function retrieves job details posted by a specific user based on search criteria, with pagination.
+  // It filters jobs based on skills, job titles, job locations, and company names.
+  // It accepts 'searchText' as the search string, 'limit' for the number of records per page, and 'offset' for pagination.
+  static getJobByUser = async(searchText: string, limit:number, offset:number, userId:number) => {
+    const user_id = userId;
+    const countQueryBuilder = jobRepository
+      .createQueryBuilder('job')
+      .where('job.userId = :user', { user: user_id })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('job.skills LIKE :search', { search: `%${searchText}%` })
+            .orWhere('job.jobTitle LIKE :search', { search: `%${searchText}%` })
+            .orWhere('job.jobLocation LIKE :search', {
+              search: `%${searchText}%`,
+            })
+            .orWhere('job.companyName LIKE :search', {
+              search: `%${searchText}%`,
+            });
+        })
+      );
+
+    // Execute the count query to get the total count of records
+    const totalCount = await countQueryBuilder.getCount();
+
+    // Create the final query with limit and offset
+    const jobData = await countQueryBuilder
+      .limit(limit)
+      .offset(offset)
+      .getMany();
+
+    return { totalCount, jobData };
+  };
+
+  static updateApplicationStatus = async(status:ApplicationStatus, jobApplicantId:number) => {
+    const findData = await jobApplicantRepository.findOneBy({
+      jobApplicantId: jobApplicantId,
+    });
+    if (findData) {
+      findData.applicationStatus = status;
+      const updateStatus = await jobApplicantRepository.save(findData as DeepPartial<JobApplicant>);
+      return updateStatus;
+    } else {
+      return;
+    }
+  };
+
+  // This function retrieves job application data based on a specific job ID and search criteria, with pagination.
+  // It filters job applications for a particular job based on applicant email, full name, and relevant skills.
+  // It accepts 'job_id' as the job's ID, 'searchText' as the search string, 'limit' for the number of records per page,and 'offset' for pagination.
+  static getJobAppliedData = async(job_id:string, searchText:string, limit:number, offset:number) => {
+
+    const countQueryBuilder = jobApplicantRepository
+      .createQueryBuilder('jobApplicant')
+      .where('jobApplicant.jobId = :job', { job: job_id })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('jobApplicant.applicantEmail LIKE :search', { search: `%${searchText}%` })
+            .orWhere('jobApplicant.applicantFullName LIKE :search', { search: `%${searchText}%` })
+            .orWhere('jobApplicant.applicantRelevantSkills LIKE :search', { search: `%${searchText}%` });
+        })
+      );
+
+    // Execute the count query to get the total count of records
+    const total = await countQueryBuilder.getCount();
+
+    // Create the final query with limit and offset
+    const jobAppliedData = await countQueryBuilder
+      .limit(limit)
+      .offset(offset)
+      .getMany();
+
+    return { total, jobAppliedData };
   };
 }
