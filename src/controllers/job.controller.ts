@@ -79,4 +79,19 @@ export default class JobController {
       next(error);
     }
   };
+
+  //get alumni applied job data with pagination
+  static getAlumniAppliedJobData = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = parseInt(req.query.userId as string, 10);
+      const { searchText, page } = req.query;
+      const limit = 6 ;
+      const offset = (parseInt(page as string, 10) - 1) * limit;
+      const getAlumniJobData = await JobRepository.getAlumniAppliedJob(userId as number, searchText as string, limit as number, offset as number);
+
+      return res.json({ status:200, data:getAlumniJobData });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

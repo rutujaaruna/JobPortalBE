@@ -30,4 +30,14 @@ router.get('/getJob', verifyJWT, JobController.getJob);
  */
 router.get('/getUserAppliedJob', verifyJWT, JobController.getUserAppliedJob);
 
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for Get Alumni Applied Job Data.
+ * @method : GET
+ * @endpoint : /api/jobs/getAlumniAppliedJob
+ * @middleware : verifyJWT
+ */
+router.get('/getAlumniAppliedJob', verifyJWT, JobController.getAlumniAppliedJobData);
+
 export default router;

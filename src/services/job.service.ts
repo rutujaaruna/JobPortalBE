@@ -66,4 +66,36 @@ export default class JobRepository {
 
     return appliedData;
   };
+
+  //This function get the data of job applied and their status
+  static getAlumniAppliedJob = async(userId:number, globalSearch:string, limit:number, offset:number) => {
+    // Create a copy of the query builder without the limit and offset
+    const countQueryBuilder = jobApplicantRepository
+      .createQueryBuilder('jobApplicant')
+      .where('jobApplicant.user.id = :userId', { userId })
+      .leftJoinAndSelect('jobApplicant.job', 'job')
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('job.skills LIKE :search', { search: `%${globalSearch}%` })
+            .orWhere('job.jobTitle LIKE :search', {
+              search: `%${globalSearch}%`,
+            })
+            .orWhere('job.companyName LIKE :search', {
+              search: `%${globalSearch}%`,
+            })
+            .orWhere('job.jobLocation LIKE :search', {
+              search: `%${globalSearch}%`,
+            });
+        })
+      );
+
+    // Execute the count query to get the total count of records
+    const total = await countQueryBuilder.getCount();
+
+    const JobApplicant = await countQueryBuilder
+      .limit(limit)
+      .offset(offset)
+      .getMany();
+    return { JobApplicant, total };
+  };
 }
