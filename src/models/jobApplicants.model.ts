@@ -45,7 +45,7 @@ export class JobApplicant extends BaseEntity {
     job: Job;
 
   @Column({ type: 'text', nullable: true })
-    noteForRecruiter: string;
+    designation: string;
 
   @Column({ type: 'bigint', nullable: true })
     mobileNumber: number;

@@ -178,3 +178,29 @@ export const WorkExpDetails = Joi.object({
     'any.required': 'User Id is required',
   }),
 });
+
+//post Resume of user and friends Schema for validating the fields
+export const postResumeSchema = Joi.object({
+  applicantFullName: Joi.string().required().messages({
+    'any.required': 'Applicant Name is required',
+  }),
+  applicantEmail: Joi.string().required().email().messages({
+    'any.required': 'Email is required',
+    'string.email': 'Invalid Email',
+  }),
+  mobileNumber: Joi.number().required().messages({
+    'any.required': 'Mobile Number is required',
+  }),
+  applicantRelevantSkills: Joi.string().required().messages({
+    'any.required': 'Skills is required',
+  }),
+  designation: Joi.string().required().messages({
+    'any.required': 'Designation is required',
+  }),
+  applicantResumePath: Joi.string().required().messages({
+    'any.required': 'Resume Path is required',
+  }),
+  user: Joi.number().required().messages({
+    'any.required': 'userId are required',
+  }),
+});

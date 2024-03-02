@@ -36,10 +36,10 @@ export class UserDetails {
       relationshipStatus: RelationshipStatus;
 
     @CreateDateColumn({ type: 'timestamp', nullable: true })
-    created_at: Date;
+      created_at: Date;
 
     @UpdateDateColumn({ type: 'timestamp', nullable: true })
-    updated_at: Date;
+      updated_at: Date;
 
       @ManyToOne(() => User, user => user.id)
       @JoinColumn({ name: 'userId' })

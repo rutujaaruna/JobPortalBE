@@ -2,10 +2,11 @@ import { Brackets, DeepPartial } from 'typeorm';
 import { Connection } from '../data-source';
 import { Job } from '../models/jobs.models';
 import { ApplicationStatus, JobApplicant } from '../models/jobApplicants.model';
+import { JobSeeker } from '../models/jobSeeker';
 
 
 const jobRepository = Connection.getRepository(Job);
-// const jobSeekerRepository = Connection.getRepository(JobSeeker);
+const jobSeekerRepository = Connection.getRepository(JobSeeker);
 const jobApplicantRepository = Connection.getRepository(JobApplicant);
 
 export default class JobRepository {
@@ -29,6 +30,9 @@ export default class JobRepository {
         new Brackets((qb) => {
           qb.where('job.skills LIKE :search', { search: `%${globalSearch}%` })
             .orWhere('job.jobTitle LIKE :search', {
+              search: `%${globalSearch}%`,
+            })
+            .orWhere('job.companyName LIKE :search', {
               search: `%${globalSearch}%`,
             })
             .orWhere('job.jobLocation LIKE :search', {
@@ -172,4 +176,84 @@ export default class JobRepository {
 
     return { total, jobAppliedData };
   };
+    // This function retrieves job seeker data based on a global search string with pagination.
+  // It filters job seekers based on their email, full name, and relevant skills.
+  // It accepts 'searchText' as the search string, 'limit' for the number of records per page,and 'offset' for pagination.
+  static getJobSeekerData = async(searchText:string, limit:number, offset:number, userId:number) => {
+    const countQueryBuilder = jobSeekerRepository
+      .createQueryBuilder('jobSeeker')
+      .leftJoinAndSelect('jobSeeker.user', 'user')
+      .where('jobSeeker.userId != :user', { user: userId })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('jobSeeker.applicantEmail LIKE :search', { search: `%${searchText}%` })
+            .orWhere('jobSeeker.applicantFullName LIKE :search', { search: `%${searchText}%` })
+            .orWhere('jobSeeker.applicantRelevantSkills LIKE :search', { search: `%${searchText}%` });
+        })
+      );
+
+    // Execute the count query to get the total count of records
+    const total = await countQueryBuilder.getCount();
+
+    // Create the final query with limit and offset
+    const jobSeekerData = await countQueryBuilder
+      .limit(limit)
+      .offset(offset)
+      .getMany();
+
+    return { total, jobSeekerData };
+  };
+
+  static findResume = async(userId:number) => {
+    const resumeData = await jobSeekerRepository.findOneBy(
+      {
+        user: { id: userId }
+      }
+    );
+    return resumeData;
+  };
+
+  static updateResume = async(userId:number, result:JobSeeker) => {
+    const updateResumeData = await jobSeekerRepository.update(
+      { user: { id: userId } },
+      { applicantFullName: result.applicantFullName,
+        applicantEmail: result.applicantEmail,
+        mobileNumber: result.mobileNumber,
+        applicantRelevantSkills: result.applicantRelevantSkills,
+        designation:result.designation,
+        applicantResumePath: result.applicantResumePath,
+        user: { id:userId }
+      }
+    );
+    return updateResumeData;
+  };
+
+  // This function creates a new resume record in the database.
+  // It takes a 'data' object as a parameter, which should contain the job seeker's resume details.
+  static createResume = async(data: JobSeeker) => {
+    const resume = await jobSeekerRepository.save(data);
+    return resume;
+  };
+
+
+  //This function remove the resume File name and make it empty based on userId and reference
+  static deleteFileName = async(userId:number) => {
+    const resumeDelete = await jobSeekerRepository.findOneBy({
+      user:{ id:userId }
+    });
+    if (resumeDelete) resumeDelete.applicantResumePath = '';
+    const removeResume = await jobSeekerRepository.save(resumeDelete as DeepPartial<JobSeeker>);
+    return removeResume;
+  };
+
+  // This function retrieves a user's resume based on their user ID.
+  static getResume = async(user_id: number) => {
+
+    const resume = await jobSeekerRepository.findOne({
+      where: { user: { id: user_id } },
+    });
+
+    return resume;
+  };
+
 }

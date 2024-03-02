@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import JobController from '../controllers/job.controller';
 import { verifyJWT } from '../middlewares/authenticate.middleware';
+import { uploadDoc } from '../middlewares/multer.middleware';
 
 const router = Router();
 
@@ -67,6 +68,43 @@ router.post('/updateStatus', verifyJWT, JobController.updateApplicationStatus);
  */
 router.get('/getAppliedJobData', verifyJWT, JobController.getAppliedJobData);
 
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for getting job seeker details.
+ * @method : GET
+ * @endpoint : /api/jobs/getJobSeeker
+ * @middleware : verifyJWT
+ */
+router.get('/getJobSeeker', verifyJWT, JobController.getJobSeeker);
+
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for posting a Resume with file upload.
+ * @method : POST
+ * @endpoint : /api/jobs/postResume
+ * @middleware :  uploadDoc.single('file'),verifyJWT
+ */
+router.post('/postResume', verifyJWT, uploadDoc.single('file'), JobController.postResume);
+
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for Delete the Resume File.
+ * @method : DELETE
+ * @endpoint : /api/jobs/deleteResumeFile
+ * @middleware : verifyJWT
+ */
+router.delete('/deleteResumeFile', verifyJWT, JobController.deleteResumeFile);
+
+/**
+ * @author : Karthik Ganesan
+ * @description : Route for getting user and friend resume details.
+ * @method : GET
+ * @endpoint : /api/jobs/getResume
+ * @middleware : verifyJWT
+ */
+router.get('/getResume', verifyJWT, JobController.getResumeData);
 
 
 export default router;

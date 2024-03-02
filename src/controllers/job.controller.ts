@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { postJobSchema } from '../utils/joi.util';
+import { postJobSchema, postResumeSchema } from '../utils/joi.util';
 import JobRepository from '../services/job.service';
 import { Job } from '../models/jobs.models';
 import moment from 'moment';
@@ -160,5 +160,80 @@ export default class JobController {
       next(error);
     }
 
+  };
+
+  // This function handles the retrieval of job seeker details based on search criteria.
+  static getJobSeeker = async(req:Request, res:Response, next:NextFunction) => {
+    try {
+      const { searchText, page } = req.query;
+      const limit = 6;
+      const offset = (parseInt(page as string, 10) - 1) * limit;
+      const userId = parseInt(req.query.userId as string, 10);
+      const jobSeekerDetails = await JobRepository.getJobSeekerData(searchText as string, limit as number, offset as number, userId as number);
+
+      if (jobSeekerDetails) return res.json({ status:200, data:jobSeekerDetails });
+      return res.json({ status:400, message:'An error occurred while getting job details' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // This function handles the submission of a resume. It expects a JSON payload with resume data
+  static postResume = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+      const resumeData = JSON.parse(req.body.data);
+      resumeData.applicantResumePath = req.body.newFileName;
+      resumeData.user = parseInt(req.query.userId as string, 10);
+
+      const findResume = await JobRepository.findResume(resumeData.user as number);
+
+      if (findResume) {
+        if (resumeData.applicantResumePath === undefined) resumeData.applicantResumePath = findResume.applicantResumePath;
+
+        const updateResume = await JobRepository.updateResume(resumeData.user as number, resumeData);
+
+        // If an error occurs during creating a applicant, return a 500 error.
+        if (!updateResume) return res.json({ status:500, message:'Error occurred while Updating the Resume' });
+
+      } else {
+        const result = await postResumeSchema.validateAsync(resumeData);
+
+        const postResume = await JobRepository.createResume(result);
+
+        // If an error occurs during creating a applicant, return a 500 error.
+        if (!postResume) return res.json({ status:500, message:'Error occurred while Submitting the Resume' });
+
+      }
+
+      return res.json({ status:200, message:'success' }); //success response
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //This function delete the Resume file Name.
+  static deleteResumeFile = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = parseInt(req.query.userId as string, 10);
+      const deleteFileName = await JobRepository.deleteFileName(userId as number);
+
+      if (deleteFileName) return res.json({ status:200, message:'Success' });
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //This function retrieves Resume Data of alumni and friends of the alumni.
+  static getResumeData = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = parseInt(req.query.userId as string, 10);
+
+      const resumeData = await JobRepository.getResume(userId as number);
+
+      if (resumeData) return res.json({ status:200, data:resumeData });
+    } catch (error) {
+      next(error);
+    }
   };
 }

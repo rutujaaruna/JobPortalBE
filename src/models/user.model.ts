@@ -48,6 +48,9 @@ export class User {
   @Column({ type: 'enum', enum: Gender, nullable: true })
     gender: Gender;
 
+    @Column({ type: 'varchar', length: 255, nullable: true })
+      profilePic: string;
+
   @Column({ type: 'enum', enum: role, nullable: true })
     role: role;
 

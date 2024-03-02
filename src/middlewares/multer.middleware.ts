@@ -37,6 +37,7 @@ export const uploadDoc = multer({
         const extension = path.extname(file.originalname);
         const randomString = generateRandomString(10, 'alphabetic');
         const newFileName = randomString.concat(extension);
+        req.body.newFileName = newFileName;
         cb(null, newFileName);
       } catch (error) {
         logger.error(error);
