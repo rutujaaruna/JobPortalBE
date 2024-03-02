@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoute from './auth.route';
 import jobRoute from './job.route';
 import userRoute from './user.route';
+import botRoute from "./bot.route";
 
 const router = Router();
 
@@ -23,6 +24,10 @@ const proRoute: IRoute[] = [
     path: '/jobs',
     route: jobRoute,
   },
+  {
+    path: '/bot',
+    route: botRoute,
+  }
 ];
 
 proRoute.forEach((route) => {
