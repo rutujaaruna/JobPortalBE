@@ -79,4 +79,9 @@ export default class UserRepository {
     });
     return data;
   };
+
+  static uploadProfilePic = async(userId:number, profilePic:string) => {
+    const user = await userRepository.update({ id:userId }, { profilePic:profilePic });
+    return user;
+  };
 }

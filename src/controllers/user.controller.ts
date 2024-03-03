@@ -109,4 +109,20 @@ export default class UserController {
       next(err);
     }
   };
+
+  static uploadProfilePic = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = parseInt(req.query.userId as string, 10);
+      const fileName = req.body.newFileName;
+
+      await UserRepository.uploadProfilePic(userId, fileName);
+
+      return res.json({ status:200, message:'Image uploaded successfully' });
+
+
+    } catch (err) {
+      next(err);
+    }
+
+  };
 }
