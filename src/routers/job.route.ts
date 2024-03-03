@@ -69,6 +69,24 @@ router.post('/updateStatus', verifyJWT, JobController.updateApplicationStatus);
 router.get('/getAppliedJobData', verifyJWT, JobController.getAppliedJobData);
 
 /**
+ * @author : Rutuja Patil
+ * @description : Route to save jobs which is user wants to save
+ * @method : post
+ * @endpoint : /api/jobs/saveJobs
+ * @middleware : verifyJWT
+ */
+router.post('/saveJobs', verifyJWT, JobController.saveJobs);
+
+/**
+ * @author : Rutuja Patil
+ * @description : " Route useto get saved job data"
+ * @method : get
+ * @endpoint : /api/jobd/getSavedJobData
+ * @middleware : verifyJWT
+ */
+router.get('/getSavedJobData', verifyJWT, JobController.getSavedJobData);
+
+/**
  * @author : Karthik Ganesan
  * @description : Route for getting job seeker details.
  * @method : GET
@@ -105,6 +123,15 @@ router.delete('/deleteResumeFile', verifyJWT, JobController.deleteResumeFile);
  * @middleware : verifyJWT
  */
 router.get('/getResume', verifyJWT, JobController.getResumeData);
+
+/**
+ * @author : Rutuja Patil 
+ * @description : Route to unsave jobs which is user want to unsave
+ * @method : post
+ * @endpoint : /api/jobs/unSaveJobs
+ * @middleware : verifyJWT
+ */
+router.post('/unSaveJobs', verifyJWT, JobController.unSaveJobs);
 
 
 export default router;

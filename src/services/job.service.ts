@@ -3,16 +3,19 @@ import { Connection } from '../data-source';
 import { Job } from '../models/jobs.models';
 import { ApplicationStatus, JobApplicant } from '../models/jobApplicants.model';
 import { JobSeeker } from '../models/jobSeeker';
+import { SaveJobDetails } from '../models/saveJobs.model';
+import { In } from 'typeorm';
 
 
 const jobRepository = Connection.getRepository(Job);
 const jobSeekerRepository = Connection.getRepository(JobSeeker);
 const jobApplicantRepository = Connection.getRepository(JobApplicant);
+const savedJobRepository = Connection.getRepository(SaveJobDetails);
 
 export default class JobRepository {
 
   // This function creates a new job record in the database.
-  static createJob = async(data: Job) => {
+  static createJob = async (data: Job) => {
     const job = await jobRepository.save(data);
     return job;
   };
@@ -20,7 +23,7 @@ export default class JobRepository {
   // This function retrieves job details based on a global search string with pagination.
   // It uses search criteria to filter jobs based on skills, job titles, and job locations.
   // It accepts 'globalSearch' as the search string, 'limit' for the number of records per page, and 'offset' for pagination. others
-  static getJobDetails = async(globalSearch: string, limit: number, offset: number, userId: number) => {
+  static getJobDetails = async (globalSearch: string, limit: number, offset: number, userId: number) => {
 
     // Create a copy of the query builder without the limit and offset
     const countQueryBuilder = jobRepository
@@ -55,9 +58,8 @@ export default class JobRepository {
 
   // This function retrieves job application data for a specific user and a specific job, based on a reference.
   // It accepts the 'job_id' for the job's ID, 'reference' as the reference value, and 'user_id' for the user's ID.
-  static getUserAppliedData = async(jobId:number, userId:number) => {
+  static getUserAppliedData = async (jobId: number, userId: number) => {
     const user_id = userId;
-    console.log('user_id', user_id, jobId);
 
 
     const appliedData = await jobApplicantRepository.find({
@@ -66,13 +68,12 @@ export default class JobRepository {
         job: { jobId: jobId },
       },
     });
-    console.log('appliedData', appliedData);
 
     return appliedData;
   };
 
   //This function get the data of job applied and their status
-  static getAlumniAppliedJob = async(userId:number, globalSearch:string, limit:number, offset:number) => {
+  static getAlumniAppliedJob = async (userId: number, globalSearch: string, limit: number, offset: number) => {
     // Create a copy of the query builder without the limit and offset
     const countQueryBuilder = jobApplicantRepository
       .createQueryBuilder('jobApplicant')
@@ -106,7 +107,7 @@ export default class JobRepository {
   // This function retrieves job details posted by a specific user based on search criteria, with pagination.
   // It filters jobs based on skills, job titles, job locations, and company names.
   // It accepts 'searchText' as the search string, 'limit' for the number of records per page, and 'offset' for pagination.
-  static getJobByUser = async(searchText: string, limit:number, offset:number, userId:number) => {
+  static getJobByUser = async (searchText: string, limit: number, offset: number, userId: number) => {
     const user_id = userId;
     const countQueryBuilder = jobRepository
       .createQueryBuilder('job')
@@ -136,7 +137,7 @@ export default class JobRepository {
     return { totalCount, jobData };
   };
 
-  static updateApplicationStatus = async(status:ApplicationStatus, jobApplicantId:number) => {
+  static updateApplicationStatus = async (status: ApplicationStatus, jobApplicantId: number) => {
     const findData = await jobApplicantRepository.findOneBy({
       jobApplicantId: jobApplicantId,
     });
@@ -152,7 +153,7 @@ export default class JobRepository {
   // This function retrieves job application data based on a specific job ID and search criteria, with pagination.
   // It filters job applications for a particular job based on applicant email, full name, and relevant skills.
   // It accepts 'job_id' as the job's ID, 'searchText' as the search string, 'limit' for the number of records per page,and 'offset' for pagination.
-  static getJobAppliedData = async(job_id:string, searchText:string, limit:number, offset:number) => {
+  static getJobAppliedData = async (job_id: string, searchText: string, limit: number, offset: number) => {
 
     const countQueryBuilder = jobApplicantRepository
       .createQueryBuilder('jobApplicant')
@@ -176,10 +177,10 @@ export default class JobRepository {
 
     return { total, jobAppliedData };
   };
-    // This function retrieves job seeker data based on a global search string with pagination.
+  // This function retrieves job seeker data based on a global search string with pagination.
   // It filters job seekers based on their email, full name, and relevant skills.
   // It accepts 'searchText' as the search string, 'limit' for the number of records per page,and 'offset' for pagination.
-  static getJobSeekerData = async(searchText:string, limit:number, offset:number, userId:number) => {
+  static getJobSeekerData = async (searchText: string, limit: number, offset: number, userId: number) => {
     const countQueryBuilder = jobSeekerRepository
       .createQueryBuilder('jobSeeker')
       .leftJoinAndSelect('jobSeeker.user', 'user')
@@ -204,7 +205,7 @@ export default class JobRepository {
     return { total, jobSeekerData };
   };
 
-  static findResume = async(userId:number) => {
+  static findResume = async (userId: number) => {
     const resumeData = await jobSeekerRepository.findOneBy(
       {
         user: { id: userId }
@@ -213,16 +214,17 @@ export default class JobRepository {
     return resumeData;
   };
 
-  static updateResume = async(userId:number, result:JobSeeker) => {
+  static updateResume = async (userId: number, result: JobSeeker) => {
     const updateResumeData = await jobSeekerRepository.update(
       { user: { id: userId } },
-      { applicantFullName: result.applicantFullName,
+      {
+        applicantFullName: result.applicantFullName,
         applicantEmail: result.applicantEmail,
         mobileNumber: result.mobileNumber,
         applicantRelevantSkills: result.applicantRelevantSkills,
-        designation:result.designation,
+        designation: result.designation,
         applicantResumePath: result.applicantResumePath,
-        user: { id:userId }
+        user: { id: userId }
       }
     );
     return updateResumeData;
@@ -230,16 +232,16 @@ export default class JobRepository {
 
   // This function creates a new resume record in the database.
   // It takes a 'data' object as a parameter, which should contain the job seeker's resume details.
-  static createResume = async(data: JobSeeker) => {
+  static createResume = async (data: JobSeeker) => {
     const resume = await jobSeekerRepository.save(data);
     return resume;
   };
 
 
   //This function remove the resume File name and make it empty based on userId and reference
-  static deleteFileName = async(userId:number) => {
+  static deleteFileName = async (userId: number) => {
     const resumeDelete = await jobSeekerRepository.findOneBy({
-      user:{ id:userId }
+      user: { id: userId }
     });
     if (resumeDelete) resumeDelete.applicantResumePath = '';
     const removeResume = await jobSeekerRepository.save(resumeDelete as DeepPartial<JobSeeker>);
@@ -247,7 +249,7 @@ export default class JobRepository {
   };
 
   // This function retrieves a user's resume based on their user ID.
-  static getResume = async(user_id: number) => {
+  static getResume = async (user_id: number) => {
 
     const resume = await jobSeekerRepository.findOne({
       where: { user: { id: user_id } },
@@ -255,5 +257,45 @@ export default class JobRepository {
 
     return resume;
   };
+
+
+  static checkUser = async (userId: number) => {
+    const userData = await savedJobRepository.findOne({ where: { userId: userId } });
+    return userData;
+  };
+
+  static saveJobs = async (userId: number, jobId: number[]) => {
+    return await savedJobRepository.save({ userId, jobId });
+  };
+
+  static updateSavedJob = async (userId: number, jobId: number[]) => {
+    return await savedJobRepository.update({ userId: userId }, { jobId: jobId });
+  };
+
+  static getSavedJobData = async (searchText: string, limit: number, offset: number, jobId: number[]) => {
+    const countQueryBuilder = jobRepository
+      .createQueryBuilder('jobRepository')
+      .where('jobRepository.jobId IN (:...job)', { job: jobId })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('jobRepository.companyName LIKE :search', { search: `%${searchText}%` })
+            .orWhere('jobRepository.jobLocation LIKE :search', { search: `%${searchText}%` })
+            .orWhere('jobRepository.jobTitle LIKE :search', { search: `%${searchText}%` });
+        })
+      );
+
+    // Execute the count query to get the total count of records
+    const total = await countQueryBuilder.getCount();
+
+    // Create the final query with limit and offset
+    const jobSaveddData = await countQueryBuilder
+      .limit(limit)
+      .offset(offset)
+      .getMany();
+
+    return { total, jobSaveddData };
+  };
+
+
 
 }

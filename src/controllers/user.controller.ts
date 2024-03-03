@@ -104,7 +104,6 @@ export default class UserController {
     try {
       const userId = parseInt(req.query.userId as string, 10);
       const getUserData = await UserRepository.getProfileDetails(userId);
-      console.log('getUserData', getUserData);
       return res.json({ status:200, data:getUserData });
     } catch (err) {
       next(err);
