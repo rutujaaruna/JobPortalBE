@@ -42,7 +42,7 @@ export class Job extends BaseEntity {
     @Column({ type: 'varchar', length: 255, nullable: false, default: null })
       jobLocation: string;
 
-    @Column({ type: 'json', nullable: false })
+    @Column({ type: 'json', nullable: true })
       skills: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true, default: null })
